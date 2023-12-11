@@ -14,10 +14,13 @@ const createUser = (newUser) =>{
                     massage: 'The email already exist'
                 })
             }
+            const hash = await bcrypt.hash(password, 10)
+            console.log(hash)
             const createdUser = await User.create({
                 name,
                 email,
-                password, confirmPassword, phone
+                password : hash, 
+                phone
             })
             if(createdUser){
                 resolve({
@@ -26,7 +29,6 @@ const createUser = (newUser) =>{
                     data: createdUser
                 })
             }
-            
         } catch(e){
             reject(e)
         }
