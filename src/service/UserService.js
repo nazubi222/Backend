@@ -16,7 +16,6 @@ const createUser = (newUser) =>{
                 })
             }
             const hash = await bcrypt.hash(password.toString(), 10)
-            console.log(hash)
             const createdUser = await User.create({
                 name,
                 email,
@@ -35,6 +34,7 @@ const createUser = (newUser) =>{
         }
     })
 }
+
 const loginUser = (userLogin) =>{
     return new Promise( async (resolve, reject) =>{
         const {email, password} = userLogin
@@ -77,7 +77,98 @@ const loginUser = (userLogin) =>{
     })
 }
 
+const updateUser = (id, data) =>{
+    return new Promise( async (resolve, reject) =>{
+        try{
+            const checkUser = await User.findOne({
+                _id: id
+            })
+            
+            if(checkUser == null){
+                resolve({
+                    status: 'OK',
+                    massage: 'User not exist'
+                })
+            }
+            const updatedUser = await User.findOneAndUpdate(checkUser._id, data)
+            resolve({
+                status: 'OK',
+                massage: 'Update user success',
+                data: updateUser
+            })
+        } catch(e){
+            reject(e)
+        }
+    })
+}
+
+const deleteUser = (id) =>{ //Disable
+    return new Promise( async (resolve, reject) =>{
+        try{
+            const checkUser = await User.findOne({
+                _id: id
+            })
+            
+            if(checkUser == null){
+                resolve({
+                    status: 'OK',
+                    massage: 'User not exist'
+                })
+            }
+            //await User.findOneAndDelete(checkUser._id)
+            resolve({
+                status: 'OK',
+                massage: 'Delete user success',
+            })
+        } catch(e){
+            reject(e)
+        }
+    })
+}
+
+const getAllUser = () =>{
+    return new Promise( async (resolve, reject) =>{
+        try{           
+            const allUser = await User.find()
+            resolve({
+                status: 'OK',
+                massage: 'Get all user success',
+                data : allUser
+            })
+        } catch(e){
+            reject(e)
+        }
+    })
+}
+
+const getDetailsUser = (id) =>{
+    return new Promise( async (resolve, reject) =>{
+        try{           
+            const detailsUser = await User.findOne({
+                _id : id
+            })
+            console.log(detailsUser)
+            if(detailsUser == null){
+                resolve({
+                    status: 'OK',
+                    massage: 'User not exist',
+                })
+            }
+            resolve({
+                status: 'OK',
+                massage: 'Get details user success',
+                data : detailsUser
+            })
+        } catch(e){
+            reject(e)
+        }
+    })
+}
 module.exports = {
     createUser,
-    loginUser
+    loginUser,
+    updateUser,
+    deleteUser,
+    getAllUser,
+    getDetailsUser
 }
