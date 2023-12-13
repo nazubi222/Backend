@@ -113,7 +113,7 @@ const getDetailsUser = async (req, res) => {
         const userId = req.params.id
         if(userId.length != 24)
             return res.status(200).json({
-                status: 'OK',
+                status: 'ERR',
                 massage: 'User not exist',
             })
         const response = await UserService.getDetailsUser(userId)
@@ -125,11 +125,31 @@ const getDetailsUser = async (req, res) => {
         })
     }
 }
+
+const refreshToken = async (req, res) => {
+    try{
+        const token = req.headers.token.split(' ')[1]
+        if(!token)
+            return res.status(200).json({
+                status: 'ERROR',
+                massage: 'Not found token',
+            })
+        const response = await UserService.refreshToken(token)
+        return res.status(200).json(response)
+    }
+    catch (e){
+        return res.status(404).json({
+            message : e
+        })
+    }
+}
+
 module.exports = {
     createUser,
     loginUser,
     updateUser,
     deleteUser,
     getAllUser,
-    getDetailsUser
+    getDetailsUser,
+    refreshToken
 }

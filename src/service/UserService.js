@@ -147,7 +147,6 @@ const getDetailsUser = (id) =>{
             const detailsUser = await User.findOne({
                 _id : id
             })
-            console.log(detailsUser)
             if(detailsUser == null){
                 resolve({
                     status: 'OK',
@@ -164,11 +163,14 @@ const getDetailsUser = (id) =>{
         }
     })
 }
+
+
+
 module.exports = {
     createUser,
     loginUser,
     updateUser,
     deleteUser,
     getAllUser,
-    getDetailsUser
+    getDetailsUser,
 }

@@ -26,8 +26,36 @@ const generalRefreshToken = async (payload) => {
     return refresh_token
 }
 
+const refreshToken =  async (token) =>{
+    return new Promise( async (resolve, reject) =>{
+        try{          
+            jwt.verify(token, process.env.REFRESH_TOKEN, async function (err, user) {
+                if(err){
+                    resolve({
+                        status: 'ERROR',
+                        message: 'The authentication failed'
+                    })
+                }
+                const { payload } = user
+                const access_token = await generalAccessToken({
+                id: payload?.id,
+                isAdmin: payload?.isAdmin
+                })
+                resolve({
+                    status: 'OK',
+                    massage: 'Access token is refreshed',
+                    access_token
+                })
+            })       
+        } catch(e){
+            reject(e)
+        }
+    })
+}
+
 
 module.exports = {
     generalAccessToken,
-    generalRefreshToken
+    generalRefreshToken,
+    refreshToken
 }
