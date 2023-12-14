@@ -80,12 +80,25 @@ const deleteProduct = (id) =>{
     })
 }
 
-const getAllProduct = (page = 0 , limit = 8) =>{
+const getAllProduct = (page, limit, sort, filter) =>{
     return new Promise( async (resolve, reject) =>{
         try{
+            const objectFilter = {}
+            if(filter){
+                objectFilter[filter[0]] = {'$regex': filter[1], $options: 'i'}
+                console.log(objectFilter)
+            }
             
-            const totalProduct = await Product.countDocuments()
-            const productData = await Product.find().limit(limit).skip(page*limit)
+            const  objectSort = {}
+                if (sort){
+                    objectSort[sort[1]] = sort[0]
+                    }
+                else 
+                    {   
+                        objectSort['name'] = 'asc'  
+                    }
+                const totalProduct = await Product.countDocuments(objectFilter)
+                const productData = await Product.find(objectFilter).limit(limit).skip(page*limit).sort(objectSort)
             resolve({
                 status: 'OK',
                 massage: 'SUCCESS',
@@ -124,34 +137,33 @@ const getProductById = (id) =>{
     })
 }
 
-const getProductByType = (type) =>{
-    return new Promise( async (resolve, reject) =>{
-        try{
-            const checkProduct = await Product.find({
-                type: type
-            })
-            console.log(checkProduct)
-            if(checkProduct.length === 0){
-                resolve({
-                    status: 'OK',
-                    massage: 'Product not exist'
-                })
-            }
-            resolve({
-                status: 'OK',
-                massage: 'Get success',
-                data: checkProduct
-            })
-        } catch(e){
-            reject(e)
-        }
-    })
-}
+// const getProductByType = (type) =>{
+//     return new Promise( async (resolve, reject) =>{
+//         try{
+//             const checkProduct = await Product.find({
+//                 type: type
+//             })
+//             console.log(checkProduct)
+//             if(checkProduct.length === 0){
+//                 resolve({
+//                     status: 'OK',
+//                     massage: 'Product not exist'
+//                 })
+//             }
+//             resolve({
+//                 status: 'OK',
+//                 massage: 'Get success',
+//                 data: checkProduct
+//             })
+//         } catch(e){
+//             reject(e)
+//         }
+//     })
+// }
 module.exports = {
     createProduct,
     updateProduct,
     deleteProduct,
     getAllProduct,
-    getProductById,
-    getProductByType
+    getProductById
 }

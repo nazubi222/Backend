@@ -60,8 +60,8 @@ const deleteProduct = async (req, res) => {
 
 const getAllProduct = async (req, res) => {
     try{
-        const {page , limit} = req.query
-        const response = await ProductService.getAllProduct(page , limit)
+        const {page , limit, sort, filter} = req.query
+        const response = await ProductService.getAllProduct(Number(page) || 0 , Number(limit) || 8, sort, filter)
         return res.status(200).json(response)
     }
     catch (e){
@@ -90,31 +90,30 @@ const getProductById = async (req, res) => {
     }
 }
 
-const getProductByType = async (req, res) => {
-    try{
-        const productType = req.params.type.toLowerCase()
-        console.log(productType)
-        if(!productType){
-            return res.status(200).json({
-                status: 'ERR',
-                message: 'Can not get product Type'
-            })
-        }
-        const response = await ProductService.getProductByType(productType)
-        return res.status(200).json(response)
-    }
-    catch (e){
-        return res.status(404).json({
-            message : e
-        })
-    }
-}
+// const getProductByType = async (req, res) => {
+//     try{
+//         const productType = req.params.type.toLowerCase()
+//         console.log(productType)
+//         if(!productType){
+//             return res.status(200).json({
+//                 status: 'ERR',
+//                 message: 'Can not get product Type'
+//             })
+//         }
+//         const response = await ProductService.getProductByType(productType)
+//         return res.status(200).json(response)
+//     }
+//     catch (e){
+//         return res.status(404).json({
+//             message : e
+//         })
+//     }
+// }
 
 module.exports ={
     createProduct,
     updateProduct,
     deleteProduct,
     getAllProduct,
-    getProductById,
-    getProductByType
+    getProductById
 }
