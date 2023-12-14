@@ -80,14 +80,19 @@ const deleteProduct = (id) =>{
     })
 }
 
-const getAllProduct = () =>{
+const getAllProduct = (page = 0 , limit = 8) =>{
     return new Promise( async (resolve, reject) =>{
         try{
-            const productData = await Product.find()
+            
+            const totalProduct = await Product.countDocuments()
+            const productData = await Product.find().limit(limit).skip(page*limit)
             resolve({
                 status: 'OK',
                 massage: 'SUCCESS',
-                data: productData
+                data: productData,
+                total: totalProduct,
+                currentPage: page + 1,
+                totalPage: Math.ceil(totalProduct/limit)
             })
         } catch(e){
             reject(e)
@@ -110,7 +115,7 @@ const getProductById = (id) =>{
             }
             resolve({
                 status: 'OK',
-                massage: 'product is deleted',
+                massage: 'Success',
                 data: checkProduct
             })
         } catch(e){
