@@ -3,8 +3,8 @@ const ProductService = require('../service/ProductService')
 
 const createProduct = async (req, res) => {
     try{
-        const {name, image, type, price, countInStock} = req.body 
-        if(!name || !image || !type || !price || !countInStock)
+        const {name, image, type, size, color,price, countInStock} = req.body 
+        if(!name || !image || !type || !price || !size || !color || !countInStock)
             return res.status(200).json({
                 status: 'ERROR',
                 massage: 'data input invalid',
