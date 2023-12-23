@@ -1,6 +1,6 @@
 const Order = require("../models/OrderProduct")
 const Product = require("../models/ProductModel")
-const EmailService = require("../services/EmailService")
+const EmailService = require('./EmailService')
 
 const createOrder = (newOrder) => {
     return new Promise(async (resolve, reject) => {
@@ -102,7 +102,7 @@ const getAllOrderDetails = (id) => {
 
             resolve({
                 status: 'OK',
-                message: 'SUCESSS',
+                message: 'SUCCESS',
                 data: order
             })
         } catch (e) {
