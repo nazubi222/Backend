@@ -137,33 +137,41 @@ const getProductById = (id) =>{
     })
 }
 
-// const getProductByType = (type) =>{
-//     return new Promise( async (resolve, reject) =>{
-//         try{
-//             const checkProduct = await Product.find({
-//                 type: type
-//             })
-//             console.log(checkProduct)
-//             if(checkProduct.length === 0){
-//                 resolve({
-//                     status: 'OK',
-//                     massage: 'Product not exist'
-//                 })
-//             }
-//             resolve({
-//                 status: 'OK',
-//                 massage: 'Get success',
-//                 data: checkProduct
-//             })
-//         } catch(e){
-//             reject(e)
-//         }
-//     })
-// }
+const getAllType = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const allType = await Product.distinct('type')
+            resolve({
+                status: 'OK',
+                message: 'Success',
+                data: allType,
+            })
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
+
+const deleteManyProduct = (ids) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            await Product.deleteMany({ _id: ids })
+            resolve({
+                status: 'OK',
+                message: 'Delete product success',
+            })
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
+
 module.exports = {
     createProduct,
     updateProduct,
     deleteProduct,
     getAllProduct,
-    getProductById
+    getProductById,
+    getAllType,
+    deleteManyProduct
 }

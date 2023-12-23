@@ -36,10 +36,9 @@ const refreshToken =  async (token) =>{
                         message: 'The authentication failed'
                     })
                 }
-                const { payload } = user
                 const access_token = await generalAccessToken({
-                id: payload?.id,
-                isAdmin: payload?.isAdmin
+                id: user?.id,
+                isAdmin: user?.isAdmin
                 })
                 resolve({
                     status: 'OK',
