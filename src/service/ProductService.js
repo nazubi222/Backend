@@ -36,7 +36,6 @@ const updateProduct = (id, data) =>{
             const checkProduct = await Product.findOne({
                 _id: id
             })
-            
             if(checkProduct == null){
                 resolve({
                     status: 'OK',

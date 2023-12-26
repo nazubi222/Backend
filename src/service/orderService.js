@@ -6,8 +6,8 @@ const createOrder = (newOrder) => {
     return new Promise(async (resolve, reject) => {
         const { orderItems,paymentMethod, itemsPrice, shippingPrice, totalPrice, fullName, address, city, phone,user, isPaid, paidAt,email } = newOrder
         try {
-            console.log(orderItems,paymentMethod, itemsPrice, shippingPrice, totalPrice, fullName, address, city, phone,user, isPaid, paidAt,email);
             const promises = orderItems.map(async (order) => {
+                console.log(order);
                 const productData = await Product.findOneAndUpdate(
                     {
                     _id: order.product,
@@ -19,6 +19,7 @@ const createOrder = (newOrder) => {
                     }},
                     {new: true}
                 )
+                console.log(productData);
                 if(productData) {
                     return {
                         status: 'OK',
@@ -60,7 +61,7 @@ const createOrder = (newOrder) => {
                     isPaid, paidAt
                 })
                 if (createdOrder) {
-                    await EmailService.sendEmailCreateOrder(email,orderItems)
+                    //await EmailService.sendEmailCreateOrder(email,orderItems)
                     resolve({
                         status: 'OK',
                         message: 'success'
@@ -68,32 +69,18 @@ const createOrder = (newOrder) => {
                 }
             }
         } catch (e) {
-        //   console.log('e', e)
+            console.log('e', e.message)
             reject(e)
         }
     })
 }
-
-// const deleteManyProduct = (ids) => {
-//     return new Promise(async (resolve, reject) => {
-//         try {
-//             await Product.deleteMany({ _id: ids })
-//             resolve({
-//                 status: 'OK',
-//                 message: 'Delete product success',
-//             })
-//         } catch (e) {
-//             reject(e)
-//         }
-//     })
-// }
 
 const getAllOrderDetails = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
             const order = await Order.find({
                 user: id
-            }).sort({createdAt: -1, updatedAt: -1})
+            })
             if (order === null) {
                 resolve({
                     status: 'ERR',
@@ -193,7 +180,8 @@ const cancelOrderDetails = (id, data) => {
 const getAllOrder = () => {
     return new Promise(async (resolve, reject) => {
         try {
-            const allOrder = await Order.find().sort({createdAt: -1, updatedAt: -1})
+            const allOrder = await Order.find()
+            //const allOrder = await Order.deleteMany({})
             resolve({
                 status: 'OK',
                 message: 'Success',
