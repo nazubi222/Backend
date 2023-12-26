@@ -2,7 +2,7 @@ const UserService = require('../service/UserService')
 
 const createUser = async (req, res) => {
     try{
-        const { name, email, password, confirmPassword, phone } = req.body
+        const {email, password, confirmPassword} = req.body
         const reg = /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/
         const isCheckEmail = reg.test(email)
         if(!email || !password || !confirmPassword){
@@ -50,13 +50,12 @@ const loginUser = async (req, res) => {
         const response = await UserService.loginUser(req.body)
         const {refresh_token, ...newResponse} = response
         res.cookie('refresh_token', refresh_token, {
-             httpOnly: true,
+             httpOnly: false,
              secure: false,
              sameSite: 'strict',
              path: '/',
-
         })
-        return res.status(200).json(response)
+        return res.status(200).json({...newResponse, refresh_token})
     }
     catch (e){
         return res.status(404).json({

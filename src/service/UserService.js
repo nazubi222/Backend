@@ -4,23 +4,21 @@ const { generalAccessToken, generalRefreshToken } = require("./JwtService")
 
 const createUser = (newUser) =>{
     return new Promise( async (resolve, reject) =>{
-        const { name, email, password, confirmPassword, phone } = newUser
+        const {email, password, confirmPassword} = newUser
         try{
             const checkUser = await User.findOne({
                 email: email
             })
             if(checkUser != null){
                 resolve({
-                    status: 'OK',
-                    massage: 'The email already exist'
+                    status: 'ERR',
+                    message: 'The email already exist'
                 })
             }
             const hash = await bcrypt.hash(password.toString(), 10)
             const createdUser = await User.create({
-                name,
                 email,
                 password : hash, 
-                phone
             })
             if(createdUser){
                 resolve({
@@ -44,15 +42,15 @@ const loginUser = (userLogin) =>{
             })
             if(checkUser == null){
                 resolve({
-                    status: 'OK',
-                    massage: 'Email or Password not correct'
+                    status: 'ERR',
+                    message: 'Email or Password not correct'
                 })
             }
             const comparePassword = await bcrypt.compare(password, checkUser.password)
             if(!comparePassword){
                 resolve({
-                    status: 'OK',
-                    massage: 'Email or Password not correct'
+                    status: 'ERR',
+                    message: 'Email or Password not correct'
                 })
             }
             const access_token =  await generalAccessToken({
@@ -67,7 +65,7 @@ const loginUser = (userLogin) =>{
 
             resolve({
                 status: 'OK',
-                massage: 'Login success',
+                message: 'Login success',
                 access_token,
                 refresh_token
             })
