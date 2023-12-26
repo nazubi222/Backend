@@ -4,30 +4,32 @@ const EmailService = require('./EmailService')
 
 const createOrder = (newOrder) => {
     return new Promise(async (resolve, reject) => {
-        const { orderItems,paymentMethod, itemsPrice, shippingPrice, totalPrice, fullName, address, city, phone,user, isPaid, paidAt,email } = newOrder
+        const { orderItems, paymentMethod, itemsPrice, shippingPrice, totalPrice, fullName, address, city, phone, user, isPaid, paidAt, email } = newOrder
         try {
             const promises = orderItems.map(async (order) => {
                 console.log(order);
                 const productData = await Product.findOneAndUpdate(
                     {
-                    _id: order.product,
-                    countInStock: {$gte: order.amount}
+                        _id: order.product,
+                        countInStock: { $gte: order.amount }
                     },
-                    {$inc: {
-                        countInStock: -order.amount,
-                        selled: +order.amount
-                    }},
-                    {new: true}
+                    {
+                        $inc: {
+                            countInStock: -order.amount,
+                            sold: +order.amount
+                        }
+                    },
+                    { new: true }
                 )
                 console.log(productData);
-                if(productData) {
+                if (productData) {
                     return {
                         status: 'OK',
                         message: 'SUCCESS'
                     }
                 }
-                 else {
-                    return{
+                else {
+                    return {
                         status: 'OK',
                         message: 'ERR',
                         id: order.product
@@ -36,7 +38,7 @@ const createOrder = (newOrder) => {
             })
             const results = await Promise.all(promises)
             const newData = results && results.filter((item) => item.id)
-            if(newData.length) {
+            if (newData.length) {
                 const arrId = []
                 newData.forEach((item) => {
                     arrId.push(item.id)
@@ -128,49 +130,41 @@ const getOrderDetails = (id) => {
 const cancelOrderDetails = (id, data) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let order = []
-            const promises = data.map(async (order) => {
-                const productData = await Product.findOneAndUpdate(
-                    {
+           //console.log(data) 
+            const order = data[0]
+            const productData = await Product.findOneAndUpdate(
+                {
                     _id: order.product,
-                    selled: {$gte: order.amount}
-                    },
-                    {$inc: {
+                },
+                {
+                    $inc: {
                         countInStock: +order.amount,
-                        selled: -order.amount
-                    }},
-                    {new: true}
-                )
-                if(productData) {
-                    order = await Order.findByIdAndDelete(id)
-                    if (order === null) {
-                        resolve({
-                            status: 'ERR',
-                            message: 'The order is not defined'
-                        })
+                        sold: -order.amount
                     }
-                } else {
-                    return{
-                        status: 'OK',
-                        message: 'ERR',
-                        id: order.product
-                    }
-                }
-            })
-            const results = await Promise.all(promises)
-            const newData = results && results[0] && results[0].id
-            
-            if(newData) {
+                },
+                { new: true }
+            )
+            console.log(productData);
+            if (productData) {
+                deletedOrder = await Order.findOneAndDelete(id)
+                console.log(deletedOrder);
+                // if (order === null) {
+                //     resolve({
+                //         status: 'ERR',
+                //         message: 'The order is not defined'
+                //     })
+                // }
                 resolve({
-                    status: 'ERR',
-                    message: `San pham voi id: ${newData} khong ton tai`
+                    status: 'OK',
+                    message: 'success',
+                    
                 })
-            }
-            resolve({
-                status: 'OK',
-                message: 'success',
-                data: order
-            })
+            } 
+                 resolve({
+                    status: 'ERR',
+                    message: `San pham voi id: ${productData} khong ton tai`
+                })
+            
         } catch (e) {
             reject(e)
         }

@@ -11,7 +11,7 @@ const productSchema = new mongoose.Schema(
         rating: { type: String, default : "0" },
         description: { type: String, default : "" },
         discount: { type: String, default : "0" },
-        sold: { type: String, default : "0" }
+        sold: { type: Number, default : 0 }
     },
     {
         timestamps: true,
