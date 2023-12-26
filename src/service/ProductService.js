@@ -68,6 +68,7 @@ const deleteProduct = (id) =>{
                     massage: 'Product not exist'
                 })
             }
+            checkProduct.type = checkProduct.type.toLowerCase()
             const deletedProduct = await Product.findOneAndDelete(checkProduct._id)
             resolve({
                 status: 'OK',

@@ -6,6 +6,7 @@ const createOrder = (newOrder) => {
     return new Promise(async (resolve, reject) => {
         const { orderItems,paymentMethod, itemsPrice, shippingPrice, totalPrice, fullName, address, city, phone,user, isPaid, paidAt,email } = newOrder
         try {
+            console.log(orderItems,paymentMethod, itemsPrice, shippingPrice, totalPrice, fullName, address, city, phone,user, isPaid, paidAt,email);
             const promises = orderItems.map(async (order) => {
                 const productData = await Product.findOneAndUpdate(
                     {
