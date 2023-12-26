@@ -8,7 +8,7 @@ const authMiddleware = (req, res, next) => {
     jwt.verify(token, process.env.ACCESS_TOKEN, function(err, user){
         if(err){
             return res.status(404).json({
-                message : 'The authentication failed',
+                message : err,
                 status : 'ERROR'
             })
         }
@@ -31,7 +31,7 @@ const authUserMiddleWare = (req, res, next) => {
     jwt.verify(token, process.env.ACCESS_TOKEN, function (err, user) {
         if (err) {
             return res.status(404).json({
-                message: 'The authentication failed',
+                message: err,
                 status: 'ERROR'
             })
         }
@@ -39,7 +39,7 @@ const authUserMiddleWare = (req, res, next) => {
             next()
         } else {
             return res.status(404).json({
-                message: 'The authentication failed',
+                message: err,
                 status: 'ERROR'
             })
         }
